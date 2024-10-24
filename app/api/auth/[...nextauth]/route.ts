@@ -19,7 +19,7 @@ export const authOptions: AuthOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         }),
         CredentialsProvider({
-            name: "Credentials", // Corrected label for clarity
+            name: "Credentials", // Updated for clarity
             credentials: {
                 email: { label: 'Email', type: 'text' },
                 password: { label: 'Password', type: 'password' },
@@ -61,4 +61,5 @@ export const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 
+// Correct export for the NextAuth handler
 export { handler as GET, handler as POST };
