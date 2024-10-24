@@ -5,7 +5,6 @@ import clsx from "clsx"
 
 
 interface MobileItemProps {
-  label: string,
   icon: any,
   href: string,
   onClick?: () => void;
@@ -14,7 +13,6 @@ interface MobileItemProps {
 
 
 const MobileItem: React.FC<MobileItemProps> = ({
-    label,
     icon: Icon,
     href,
     onClick,
