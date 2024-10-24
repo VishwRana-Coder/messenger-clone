@@ -1,13 +1,12 @@
 import bcrypt from 'bcrypt';
-import NextAuth, { AuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials'; // Corrected spelling
+import NextAuth, { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-
 import prisma from '@/app/libs/prismadb';
 
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         GithubProvider({
@@ -19,7 +18,7 @@ export const authOptions: AuthOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         }),
         CredentialsProvider({
-            name: "Credentials", // Update for clarity
+            name: "Credentials",
             credentials: {
                 email: { label: 'Email', type: 'text' },
                 password: { label: 'Password', type: 'password' },
@@ -28,17 +27,17 @@ export const authOptions: AuthOptions = {
                 if (!credentials?.email || !credentials?.password) {
                     throw new Error("Invalid Credentials");
                 }
-
+                
                 const user = await prisma.user.findUnique({
                     where: {
-                        email: credentials.email,
-                    },
+                        email: credentials.email
+                    }
                 });
 
                 if (!user || !user?.hashedPassword) {
                     throw new Error("Invalid Credentials");
                 }
-
+                
                 const isCorrectPassword = await bcrypt.compare(
                     credentials.password,
                     user.hashedPassword
@@ -49,9 +48,16 @@ export const authOptions: AuthOptions = {
                 }
 
                 return user;
-            },
-        }),
+            }
+        })
     ],
+    pages: {
+        signIn: '/auth/signin',  // Custom sign-in page
+        signOut: '/auth/signout', // Custom sign-out page
+        error: '/auth/error',     // Error handling page
+        verifyRequest: '/auth/verify-request', // Verification page
+        newUser: '/auth/new-user' // Custom page for new users
+    },
     debug: process.env.NODE_ENV === "development",
     session: {
         strategy: "jwt",
@@ -61,5 +67,4 @@ export const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-// Ensure only GET and POST exports are included
 export { handler as GET, handler as POST };
