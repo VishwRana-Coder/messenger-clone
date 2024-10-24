@@ -6,7 +6,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/app/libs/prismadb';
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         GithubProvider({
@@ -52,11 +52,11 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     pages: {
-        signIn: '/auth/signin',  // Custom sign-in page
-        signOut: '/auth/signout', // Custom sign-out page
-        error: '/auth/error',     // Error handling page
-        verifyRequest: '/auth/verify-request', // Verification page
-        newUser: '/auth/new-user' // Custom page for new users
+        signIn: '/auth/signin',
+        signOut: '/auth/signout',
+        error: '/auth/error',
+        verifyRequest: '/auth/verify-request',
+        newUser: '/auth/new-user',
     },
     debug: process.env.NODE_ENV === "development",
     session: {
@@ -67,4 +67,5 @@ export const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+// Exporting the handler and authOptions
+export { handler as GET, handler as POST, authOptions };
